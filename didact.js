@@ -21,3 +21,40 @@ function createTextElement(text) {
     },
   }
 }
+
+function render(element, container) {
+  // TODO
+
+  const dom =
+    element.type === "TEXT_ELEMENT"
+      ? document.createTextNode("")
+      : document.createElement(element.type)
+
+
+  const isProperty = key => key !== "children"
+  Object.keys(element.props)
+    .filter(isProperty)
+    .forEach(name => {
+      dom[name] = element.props[name]
+    })
+
+  element.props.children.forEach((child) =>
+    render(child, dom)
+  )
+
+
+
+  container.appendChild(dom)
+}
+
+const Didact = {
+  createElement,
+  render,
+}
+
+const element = Didact.createElement(
+  Didact.createElement()
+)
+
+const container = document.getElementById("root")
+Didact.render(element, container)
