@@ -30,11 +30,10 @@ function render(element, container) {
       ? document.createTextNode("")
       : document.createElement(element.type)
 
-
-  const isProperty = key => key !== "children"
+  const isProperty = (key) => key !== "children"
   Object.keys(element.props)
     .filter(isProperty)
-    .forEach(name => {
+    .forEach((name) => {
       dom[name] = element.props[name]
     })
 
@@ -42,9 +41,24 @@ function render(element, container) {
     render(child, dom)
   )
 
-
-
   container.appendChild(dom)
+}
+
+let nextUnitOfWork = null
+
+function workLoop(deadline) {
+  let shouldYield = false
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(
+      nextUnitOfWork
+    )
+    shouldYield = deadline.timeRemaining() < 1
+  }
+  requestIdleCalback(workLoop)
+}
+
+function performUnitOfWork(nextUnitOfWork) {
+  // TODO
 }
 
 const Didact = {
